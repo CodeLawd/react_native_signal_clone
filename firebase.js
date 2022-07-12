@@ -1,24 +1,25 @@
 import { initializeApp } from "firebase/app"
 import { getAuth } from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
+import {
+  REACT_APP_API_KEY,
+  REACT_APP_AUTH_DOMAIN,
+  REACT_APP_PROJECT_ID,
+  REACT_APP_STORAGE_BUCKET,
+  REACT_APP_MESSAGING_SENDER_ID,
+  REACT_APP_APP_ID,
+} from "@env"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBjEKXrGvkMayec-vmqS3pQ_UbnC3n1K2w",
-  authDomain: "signal-clone-9f8f4.firebaseapp.com",
-  projectId: "signal-clone-9f8f4",
-  storageBucket: "signal-clone-9f8f4.appspot.com",
-  messagingSenderId: "45797685334",
-  appId: "1:45797685334:web:2c9ac5b8ece649f82c63f7",
+  apiKey: REACT_APP_API_KEY,
+  authDomain: REACT_APP_AUTH_DOMAIN,
+  projectId: REACT_APP_PROJECT_ID,
+  storageBucket: REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: REACT_APP_MESSAGING_SENDER_ID,
+  appId: REACT_APP_APP_ID,
 }
 
-// // const app = initializeApp(firebaseConfig)
 const app = initializeApp(firebaseConfig)
-
-// // if (firebase.apps.length === 0) {
-// //   app = firebase.initializeApp(firebaseConfig)
-// // } else {
-// //   app = firebase.app()
-// // }
 
 const db = getFirestore(app)
 const auth = getAuth(app)

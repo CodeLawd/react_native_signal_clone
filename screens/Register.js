@@ -1,8 +1,12 @@
 import { StyleSheet, View, KeyboardAvoidingView } from "react-native"
 import React, { useState } from "react"
 import { Input, Image, Button, Text } from "@rneui/themed"
-import { createUserWithEmailAndPassword } from "firebase/auth"
-import { auth } from "../firebase"
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  getAuth,
+} from "firebase/auth"
+// import { auth } from "../firebase"
 
 const Register = ({ navigation }) => {
   const [name, setName] = useState("")
@@ -11,18 +15,28 @@ const Register = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [imageURL, setImageURL] = useState("")
 
-  const register = async () => {
-    try {
-      const user = await createUserWithEmailAndPassword(auth, email, password)
-      await user.user.update({
-        displayName: name,
-        photoURL:
-          imageURL ||
-          "https://upload.wikimedia.org/wikipedia/commons/f/f4/User_Avatar_2.png",
+  const auth = getAuth()
+
+  const register = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user
+        updateProfile(user, {
+          displayName: name,
+          photoURL:
+            imageURL ||
+            "https://upload.wikimedia.org/wikipedia/commons/f/f4/User_Avatar_2.png",
+        })
+          .then(() => {
+            alert("Account Created")
+          })
+          .catch((error) => {
+            console.log(error.message)
+          })
       })
-    } catch (error) {
-      alert(error.message)
-    }
+      .catch((error) => {
+        alert(error.message)
+      })
   }
 
   return (

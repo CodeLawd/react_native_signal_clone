@@ -1,24 +1,48 @@
-import { StyleSheet, Text, View, KeyboardAvoidingView } from "react-native"
 import React, { useState, useEffect } from "react"
+import { StyleSheet, Text, View, KeyboardAvoidingView } from "react-native"
 import { Input, Image, Button } from "@rneui/themed"
 import { useNavigation } from "@react-navigation/native"
-import { onAuthStateChanged } from "firebase/auth"
-import { auth } from "../firebase"
+import Toast from "react-native-toast-message"
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+} from "firebase/auth"
+// import { auth } from "../firebase"
 
 const LoginScreen = () => {
   const navigation = useNavigation()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const auth = getAuth()
 
   const signIn = () => {
-    console.log(email, password)
+    setLoading(true)
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        Toast.show({
+          type: "success",
+          text1: "Signed in successful 👋",
+          position: "bottom",
+        })
+      })
+      .catch((error) => {
+        Toast.show({
+          type: "error",
+          text1: error.message,
+          position: "bottom",
+        })
+      })
+    setLoading(false)
   }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log(user)
+      // console.log(user)
       if (user) {
-        navigation.reset("Home")
+        navigation.replace("Home")
       }
     })
 
@@ -26,7 +50,7 @@ const LoginScreen = () => {
   }, [])
 
   return (
-    <KeyboardAvoidingView style={styles.main}>
+    <KeyboardAvoidingView behavior="padding" style={styles.main}>
       <Image
         source={{
           uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Signal-Logo.svg/2048px-Signal-Logo.svg.png",
@@ -36,7 +60,7 @@ const LoginScreen = () => {
       <Input
         placeholder="Email"
         type="email"
-        autoFocus
+        // autoFocus
         onChangeText={(text) => setEmail(text)}
         value={email}
       />
@@ -60,6 +84,7 @@ const LoginScreen = () => {
           color: "white",
           fontSize: 20,
         }}
+        loading={loading}
       />
       <Button
         title="Register"
